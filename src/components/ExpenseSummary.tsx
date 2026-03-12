@@ -28,7 +28,7 @@ export function ExpenseSummary({
     .filter((t) => t.type === "saving")
     .reduce((acc, t) => acc + t.amount, 0);
 
-  const balance = totalIncome - totalExpenses - totalSavings;
+  const balance = totalSavings - totalExpenses;
   const savingsProgress = Math.min((totalSavings / SAVINGS_TARGET) * 100, 100);
 
   const cards = [

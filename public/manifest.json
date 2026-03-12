@@ -1,0 +1,17 @@
+{
+  "name": "ExpenseTracker",
+  "short_name": "Expenses",
+  "description": "Premium Glassmorphic Expense & Savings Tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1c",
+  "theme_color": "#0a0f1c",
+  "icons": [
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
