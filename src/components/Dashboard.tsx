@@ -1,13 +1,16 @@
 "use client";
 
 import { useTransactions } from "@/lib/store";
+import { motion } from "framer-motion";
 import { LogOut, Plus, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AddTransactionModal } from "./AddExpenseModal";
+import { BottomNav } from "./BottomNav";
 import { ExpenseChart } from "./ExpenseChart";
 import { ExpenseList } from "./ExpenseList";
 import { ExpenseSummary } from "./ExpenseSummary";
 import { IdentityModal } from "./IdentityModal";
+import { InstallPrompt } from "./InstallPrompt";
 import { SetupGuide } from "./SetupGuide";
 
 export function Dashboard() {
@@ -52,7 +55,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f1c] text-slate-200">
+    <div className="min-h-screen bg-[#0a0f1c] text-slate-200 pb-24 md:pb-8">
       <IdentityModal
         isOpen={showIdentityModal}
         onConfirm={handleIdentityConfirm}
@@ -72,23 +75,23 @@ export function Dashboard() {
                 <span className="text-white font-bold text-xl">E</span>
               </div>
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                ExpenseTracker
+                Tracker
               </h1>
             </div>
 
             {currentUser && (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setIsAddingExpense(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add Transaction</span>
+                  <span className="hidden xs:inline">Add Transaction</span>
                 </button>
-                <div className="h-8 w-px bg-white/10 mx-1" />
-                <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/5">
+                <div className="h-8 w-px bg-white/10 mx-0.5 sm:mx-1 hidden xs:block" />
+                <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/5">
                   <UserIcon className="w-4 h-4 text-blue-400" />
-                  <span className="text-sm font-medium text-slate-300">
+                  <span className="text-sm font-medium text-slate-300 truncate max-w-[80px] lg:max-w-[150px]">
                     {currentUser}
                   </span>
                 </div>
@@ -106,36 +109,45 @@ export function Dashboard() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-        {!isLoaded && !error ? (
-          <div className="flex items-center justify-center h-[60vh]">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
-              <p className="text-slate-400 font-medium">
-                Loading your finances...
-              </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          {!isLoaded && !error ? (
+            <div className="flex items-center justify-center h-[60vh]">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+                <p className="text-slate-400 font-medium">
+                  Loading your finances...
+                </p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <ExpenseSummary
-              transactions={transactions}
-              onAddClick={() => setIsAddingExpense(true)}
-            />
+          ) : (
+            <div className="space-y-8">
+              <ExpenseSummary
+                transactions={transactions}
+                onAddClick={() => setIsAddingExpense(true)}
+              />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <ExpenseList
-                  transactions={transactions}
-                  onDelete={deleteTransaction}
-                />
-              </div>
-              <div className="lg:col-span-1">
-                <ExpenseChart transactions={transactions} />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2">
+                  <ExpenseList
+                    transactions={transactions}
+                    onDelete={deleteTransaction}
+                  />
+                </div>
+                <div className="lg:col-span-1">
+                  <ExpenseChart transactions={transactions} />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </motion.div>
       </main>
+
+      <BottomNav onAddClick={() => setIsAddingExpense(true)} />
+      <InstallPrompt />
 
       <AddTransactionModal
         isOpen={isAddingExpense}

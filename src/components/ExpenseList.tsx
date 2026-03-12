@@ -177,40 +177,47 @@ export function ExpenseList({ transactions, onDelete }: ExpenseListProps) {
                   transition={{ duration: 0.2, delay: Math.min(i * 0.04, 0.4) }}
                   className="group flex items-center justify-between p-4 rounded-xl transition-all"
                 >
-                  <div className="flex items-center gap-4">
-                    <CategoryIcon category={tx.category} type={tx.type} />
-                    <div>
-                      <p className="font-semibold text-slate-200">
-                        {tx.description}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span
-                          className={`text-xs font-medium px-2 py-0.5 rounded-md capitalize ${cfg.badge}`}
-                        >
-                          {tx.type}
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          {tx.category}
-                        </span>
-                        <span className="text-xs text-slate-600">•</span>
-                        <span className="text-xs text-slate-500">
-                          {formatDate(tx.date)}
-                        </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <CategoryIcon category={tx.category} type={tx.type} />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-slate-200 truncate">
+                          {tx.description}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
+                          <span
+                            className={`text-[10px] sm:text-xs font-medium px-2 py-0.5 rounded-md capitalize ${cfg.badge}`}
+                          >
+                            {tx.type}
+                          </span>
+                          <span className="hidden xs:inline text-xs text-slate-600">
+                            •
+                          </span>
+                          <span className="text-[10px] sm:text-xs text-slate-500 truncate">
+                            {tx.category}
+                          </span>
+                          <span className="text-xs text-slate-600">•</span>
+                          <span className="text-[10px] sm:text-xs text-slate-500">
+                            {formatDate(tx.date)}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`font-bold text-lg ${cfg.cls}`}>
-                      {cfg.prefix}
-                      {formatCurrency(tx.amount)}
-                    </span>
-                    <button
-                      onClick={() => onDelete(tx.id)}
-                      className="opacity-0 group-hover:opacity-100 p-2 text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
-                      aria-label="Delete transaction"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-between sm:justify-end gap-3 pl-12 sm:pl-0">
+                      <span
+                        className={`font-bold text-base sm:text-lg whitespace-nowrap ${cfg.cls}`}
+                      >
+                        {cfg.prefix}
+                        {formatCurrency(tx.amount)}
+                      </span>
+                      <button
+                        onClick={() => onDelete(tx.id)}
+                        className="opacity-100 sm:opacity-0 group-hover:opacity-100 p-2 text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all"
+                        aria-label="Delete transaction"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               );
