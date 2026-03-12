@@ -81,14 +81,7 @@ export function Dashboard() {
 
             {currentUser && (
               <div className="flex items-center gap-2 sm:gap-4">
-                <button
-                  onClick={() => setIsAddingExpense(true)}
-                  className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden xs:inline">Add Transaction</span>
-                </button>
-                <div className="h-8 w-px bg-white/10 mx-0.5 sm:mx-1 hidden xs:block" />
+
                 <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/5">
                   <UserIcon className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-slate-300 truncate max-w-[80px] lg:max-w-[150px]">
