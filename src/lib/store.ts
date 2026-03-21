@@ -72,6 +72,7 @@ export function useTransactions(userEmail: string | null) {
 
   const addTransaction = async (transaction: Omit<Transaction, "id">) => {
     if (!userEmail) return;
+
     try {
       const res = await fetch("/api/transactions", {
         method: "POST",
@@ -83,6 +84,7 @@ export function useTransactions(userEmail: string | null) {
         throw new Error(err.error || "Failed to add transaction");
       }
       const newTransaction: Transaction = await res.json();
+      newTransaction.amount = Number(newTransaction.amount);
       setTransactions((prev) => [newTransaction, ...prev]);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Unknown error";

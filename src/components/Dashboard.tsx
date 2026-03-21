@@ -2,7 +2,7 @@
 
 import { useTransactions } from "@/lib/store";
 import { motion } from "framer-motion";
-import { LogOut, Plus, User as UserIcon } from "lucide-react";
+import { LogOut, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AddTransactionModal } from "./AddExpenseModal";
 import { BottomNav } from "./BottomNav";
@@ -81,7 +81,6 @@ export function Dashboard() {
 
             {currentUser && (
               <div className="flex items-center gap-2 sm:gap-4">
-
                 <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/5">
                   <UserIcon className="w-4 h-4 text-blue-400" />
                   <span className="text-sm font-medium text-slate-300 truncate max-w-[80px] lg:max-w-[150px]">
