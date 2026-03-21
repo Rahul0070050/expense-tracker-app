@@ -1,21 +1,30 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { ArrowDownRight, PiggyBank } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface BottomNavProps {
-  onAddClick: () => void;
+  onAddExpense: () => void;
+  onAddSaving: () => void;
 }
 
-export function BottomNav({ onAddClick }: BottomNavProps) {
+export function BottomNav({ onAddExpense, onAddSaving }: BottomNavProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-6 flex justify-center pointer-events-none">
-      <div className="bg-[#0a0f1c]/80 backdrop-blur-xl border border-white/10 rounded-full p-2 shadow-2xl shadow-blue-500/10 pointer-events-auto">
+      <div className="bg-[#0a0f1c]/80 backdrop-blur-xl border border-white/10 rounded-full p-2 shadow-2xl flex gap-2 pointer-events-auto">
         <button 
-          onClick={onAddClick}
-          className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/40 text-white hover:scale-110 active:scale-90 transition-all"
+          onClick={onAddSaving}
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full text-white font-semibold shadow-lg shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all w-32 justify-center"
         >
-          <Plus className="w-10 h-10" />
+          <PiggyBank className="w-5 h-5" />
+          <span>Savings</span>
+        </button>
+        <button 
+          onClick={onAddExpense}
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full text-white font-semibold shadow-lg shadow-rose-500/40 hover:scale-105 active:scale-95 transition-all w-32 justify-center"
+        >
+          <ArrowDownRight className="w-5 h-5" />
+          <span>Expense</span>
         </button>
       </div>
     </div>

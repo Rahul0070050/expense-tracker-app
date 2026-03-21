@@ -7,15 +7,11 @@ import { ArrowDownRight, PiggyBank, Target, Wallet } from "lucide-react";
 
 interface ExpenseSummaryProps {
   transactions: Transaction[];
-  onAddClick?: () => void;
 }
 
 const SAVINGS_TARGET = 50000;
 
-export function ExpenseSummary({
-  transactions,
-  onAddClick,
-}: ExpenseSummaryProps) {
+export function ExpenseSummary({ transactions }: ExpenseSummaryProps) {
   const totalIncome = transactions
     .filter((t) => t.type === "income")
     .reduce((acc, t) => acc + t.amount, 0);
@@ -29,7 +25,10 @@ export function ExpenseSummary({
     .reduce((acc, t) => acc + t.amount, 0);
 
   const balance = totalSavings - totalExpenses;
-  const savingsProgress = Math.min((totalSavings / SAVINGS_TARGET) * 100, 100);
+  const savingsProgress = Math.min(
+    ((totalSavings - totalExpenses) / SAVINGS_TARGET) * 100,
+    100,
+  );
 
   const cards = [
     {

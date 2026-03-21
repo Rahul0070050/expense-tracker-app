@@ -72,7 +72,6 @@ export function useTransactions(userEmail: string | null) {
 
   const addTransaction = async (transaction: Omit<Transaction, "id">) => {
     if (!userEmail) return;
-
     try {
       const res = await fetch("/api/transactions", {
         method: "POST",

@@ -16,7 +16,7 @@ import { SetupGuide } from "./SetupGuide";
 export function Dashboard() {
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [showIdentityModal, setShowIdentityModal] = useState(false);
-  const [isAddingExpense, setIsAddingExpense] = useState(false);
+  const [addingType, setAddingType] = useState<"expense" | "saving" | null>(null);
 
   // Load identity from localStorage on mount
   useEffect(() => {
@@ -119,7 +119,6 @@ export function Dashboard() {
             <div className="space-y-8">
               <ExpenseSummary
                 transactions={transactions}
-                onAddClick={() => setIsAddingExpense(true)}
               />
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -138,12 +137,16 @@ export function Dashboard() {
         </motion.div>
       </main>
 
-      <BottomNav onAddClick={() => setIsAddingExpense(true)} />
+      <BottomNav 
+        onAddExpense={() => setAddingType("expense")}
+        onAddSaving={() => setAddingType("saving")}
+      />
       <InstallPrompt />
 
       <AddTransactionModal
-        isOpen={isAddingExpense}
-        onClose={() => setIsAddingExpense(false)}
+        isOpen={addingType !== null}
+        type={addingType || "expense"}
+        onClose={() => setAddingType(null)}
         onAdd={addTransaction}
       />
     </div>

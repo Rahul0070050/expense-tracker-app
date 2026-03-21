@@ -3,10 +3,11 @@
 import { Category, TransactionType } from "@/lib/store";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlignLeft, Calendar, IndianRupee, Plus, Tag, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AddTransactionModalProps {
   isOpen: boolean;
+  type: "expense" | "saving";
   onClose: () => void;
   onAdd: (transaction: {
     type: TransactionType;
@@ -50,22 +51,26 @@ const TYPE_STYLES: Record<
 
 export function AddTransactionModal({
   isOpen,
+  type,
   onClose,
   onAdd,
 }: AddTransactionModalProps) {
-  const [type, setType] = useState<TransactionType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState<Category>("Food");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const style = TYPE_STYLES[type as "expense" | "saving"];
+  useEffect(() => {
+    if (isOpen) {
+      setCategory(CATEGORIES_BY_TYPE[type][0]);
+      setAmount("");
+      setDescription("");
+      setDate(new Date().toISOString().split("T")[0]);
+    }
+  }, [isOpen, type]);
 
-  const handleTypeChange = (t: "expense" | "saving") => {
-    setType(t);
-    setCategory(CATEGORIES_BY_TYPE[t][0]);
-  };
+  const style = TYPE_STYLES[type as "expense" | "saving"];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,24 +119,6 @@ export function AddTransactionModal({
               >
                 <X className="h-5 w-5" />
               </button>
-            </div>
-
-            {/* Type Switcher */}
-            <div className="mb-5 flex rounded-xl border border-white/10 bg-white/5 p-1 gap-1">
-              {(["expense", "saving"] as const).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => handleTypeChange(t)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${
-                    type === t
-                      ? `${TYPE_STYLES[t].bg} ${TYPE_STYLES[t].accent}`
-                      : "text-slate-500 hover:text-slate-300"
-                  }`}
-                >
-                  {TYPE_STYLES[t].label}
-                </button>
-              ))}
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
