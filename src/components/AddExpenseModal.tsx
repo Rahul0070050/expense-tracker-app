@@ -4,6 +4,7 @@ import { Category, TransactionType } from "@/lib/store";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlignLeft, Calendar, IndianRupee, Plus, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import confetti from "canvas-confetti";
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -84,6 +85,17 @@ export function AddTransactionModal({
         description,
         date: new Date(date).toISOString(),
       });
+
+      if (type === "saving") {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+          zIndex: 1000,
+          colors: ["#60a5fa", "#3b82f6", "#818cf8", "#cbd5e1", "#e2e8f0"],
+        });
+      }
+
       setAmount("");
       setDescription("");
       setDate(new Date().toISOString().split("T")[0]);
