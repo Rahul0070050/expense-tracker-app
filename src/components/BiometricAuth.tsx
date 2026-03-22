@@ -15,6 +15,8 @@ export function BiometricAuth({ username, onAuthenticated }: BiometricAuthProps)
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [isSupported, setIsSupported] = useState<boolean | null>(null);
+  const [isFallbackMode, setIsFallbackMode] = useState(false);
+  const [fallbackUsername, setFallbackUsername] = useState("");
 
   useEffect(() => {
     // Check if webauthn is supported and credential exists
@@ -71,6 +73,19 @@ export function BiometricAuth({ username, onAuthenticated }: BiometricAuthProps)
       onAuthenticated();
   }
 
+  const handleFallbackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (fallbackUsername.trim().toLowerCase() === username.toLowerCase()) {
+      setStatus("success");
+      setTimeout(() => {
+        onAuthenticated();
+      }, 500);
+    } else {
+      setStatus("error");
+      setErrorMsg("Incorrect username. Please try again.");
+    }
+  };
+
   if (hasCredential === null || isSupported === null) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0f1c]/95 backdrop-blur-md">
@@ -121,34 +136,82 @@ export function BiometricAuth({ username, onAuthenticated }: BiometricAuthProps)
           </div>
         )}
 
-        <button
-          onClick={!isSupported ? skipAuthIfUnsupported : (hasCredential ? handleUnlock : handleSetup)}
-          disabled={status === "loading" || status === "success"}
-          className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 transition-all outline-none disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {status === "loading" ? (
-            "Processing..."
-          ) : status === "success" ? (
-            hasCredential ? "Unlocked!" : "Setup Complete!"
-          ) : (
-            <>
-              {!isSupported ? null : <Fingerprint className="w-5 h-5" />}
-              {!isSupported ? "Skip Security" : (hasCredential ? "Unlock with Biometrics" : "Set up Biometrics")}
-            </>
-          )}
-        </button>
+        {!isFallbackMode ? (
+          <>
+            <button
+              onClick={!isSupported ? skipAuthIfUnsupported : (hasCredential ? handleUnlock : handleSetup)}
+              disabled={status === "loading" || status === "success"}
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 transition-all outline-none disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {status === "loading" ? (
+                "Processing..."
+              ) : status === "success" ? (
+                hasCredential ? "Unlocked!" : "Setup Complete!"
+              ) : (
+                <>
+                  {!isSupported ? null : <Fingerprint className="w-5 h-5" />}
+                  {!isSupported ? "Skip Security" : (hasCredential ? "Unlock with Biometrics" : "Set up Biometrics")}
+                </>
+              )}
+            </button>
 
-        {/* Option to clear name and reset if someone else is using the device or auth fails consistently */}
-        <button
-          onClick={() => {
-            localStorage.removeItem("expense_user_name");
-            localStorage.removeItem("expense_auth_credential");
-            window.location.reload();
-          }}
-          className="mt-6 text-xs text-slate-500 hover:text-slate-300 transition-colors"
-        >
-          Switch User / Reset Configuration
-        </button>
+            {isSupported && (
+              <button
+                onClick={() => hasCredential ? setIsFallbackMode(true) : onAuthenticated()}
+                className="mt-6 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                {hasCredential ? "Or login with Username instead" : "Skip and continue with Username"}
+              </button>
+            )}
+
+            {/* Option to clear name and reset if someone else is using the device or auth fails consistently */}
+            <button
+              onClick={() => {
+                localStorage.removeItem("expense_user_name");
+                localStorage.removeItem("expense_auth_credential");
+                window.location.reload();
+              }}
+              className="mt-6 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            >
+              Switch User / Reset Configuration
+            </button>
+          </>
+        ) : (
+          <form onSubmit={handleFallbackSubmit} className="w-full space-y-4">
+            <div className="relative">
+              <input
+                autoFocus
+                type="text"
+                required
+                value={fallbackUsername}
+                onChange={(e) => {
+                  setFallbackUsername(e.target.value);
+                  if (status === "error") setStatus("idle");
+                }}
+                placeholder="Enter your username to unlock"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-4 text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={status === "success" || !fallbackUsername.trim()}
+              className="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 transition-all outline-none disabled:opacity-50"
+            >
+              {status === "success" ? "Unlocked!" : "Unlock"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsFallbackMode(false);
+                setStatus("idle");
+                setErrorMsg("");
+              }}
+              className="w-full mt-4 text-sm font-medium text-slate-400 hover:text-slate-300 transition-colors"
+            >
+              Back to Biometrics
+            </button>
+          </form>
+        )}
       </motion.div>
     </div>
   );
