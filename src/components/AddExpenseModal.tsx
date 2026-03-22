@@ -1,10 +1,10 @@
 "use client";
 
 import { Category, TransactionType } from "@/lib/store";
+import confetti from "canvas-confetti";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlignLeft, Calendar, IndianRupee, Plus, Tag, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
 
 interface AddTransactionModalProps {
   isOpen: boolean;

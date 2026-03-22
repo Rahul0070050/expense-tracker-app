@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AddTransactionModal } from "./AddExpenseModal";
+import { BiometricAuth } from "./BiometricAuth";
 import { BottomNav } from "./BottomNav";
 import { ExpenseChart } from "./ExpenseChart";
 import { ExpenseList } from "./ExpenseList";
@@ -16,6 +17,7 @@ import { SetupGuide } from "./SetupGuide";
 export function Dashboard() {
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [showIdentityModal, setShowIdentityModal] = useState(false);
+  const [isFullyAuthenticated, setIsFullyAuthenticated] = useState(false);
   const [addingType, setAddingType] = useState<"expense" | "saving" | null>(null);
 
   // Load identity from localStorage on mount
@@ -29,7 +31,7 @@ export function Dashboard() {
   }, []);
 
   const { transactions, addTransaction, deleteTransaction, isLoaded, error } =
-    useTransactions(currentUser);
+    useTransactions(isFullyAuthenticated ? currentUser : null);
 
   const handleIdentityConfirm = (name: string) => {
     const standardizedName = name.trim().toLowerCase();
@@ -40,7 +42,9 @@ export function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("expense_user_name");
+    localStorage.removeItem("expense_auth_credential");
     setCurrentUser(null);
+    setIsFullyAuthenticated(false);
     setShowIdentityModal(true);
   };
 
@@ -56,6 +60,13 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#0a0f1c] text-slate-200 pb-24 md:pb-8">
+      {currentUser && !isFullyAuthenticated && !showIdentityModal && (
+        <BiometricAuth
+          username={currentUser}
+          onAuthenticated={() => setIsFullyAuthenticated(true)}
+        />
+      )}
+
       <IdentityModal
         isOpen={showIdentityModal}
         onConfirm={handleIdentityConfirm}
