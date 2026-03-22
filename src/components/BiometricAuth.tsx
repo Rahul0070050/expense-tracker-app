@@ -25,6 +25,18 @@ export function BiometricAuth({ username, onAuthenticated }: BiometricAuthProps)
     setHasCredential(!!cred);
   }, []);
 
+  // Auto-start scan
+  useEffect(() => {
+    if (isSupported && hasCredential !== null && !isFallbackMode && status === "idle") {
+      if (hasCredential) {
+        handleUnlock();
+      } else {
+        handleSetup();
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSupported, hasCredential, isFallbackMode, status]);
+
   const handleSetup = async () => {
     setStatus("loading");
     setErrorMsg("");
